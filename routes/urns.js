@@ -5,16 +5,20 @@ var router = express.Router();
 
 var mongoose = require('mongoose');
 
-var Urn = mongoose.model('Urn', {
-  id: 'number',
-  fill: 'number',
-  battery: 'number',
-  position: {
-    latitude: 'number',
-    longitude: 'number'
-  },
-  data: 'array'
-});
+const Urn = mongoose.model('Urn', new mongoose.Schema({
+    deviceId: 'string',
+    position: {
+        latitude: 'number',
+        longitude: 'number'
+    },
+    history: [
+        {
+            date: Date,
+            fill: 'number',
+            battery: 'number'
+        }
+    ]
+}));
 
 /*
  * GET all urns
@@ -26,10 +30,6 @@ router.get('/', (req, res, next) => {
     if (err) res.status(500).send('Error');
     res.json(urns);
   });
-  /*Urn.remove({}, (err) => {
-    if (err) return res.status(500).send(err);
-    return res.status(200).send('Ok');
-  });*/
   disconnect();
 });
 
@@ -40,11 +40,11 @@ router.get('/', (req, res, next) => {
 
 router.get('/:id', (req, res, next) => {
   connect();  
-  Urn.findOne({id: req.params.id}, function(err, urn) {
+  Urn.findOne({deviceId: req.params.id}, function(err, urn) {
+    disconnect();
     if (err) res.status(500).send(err);
     res.status(200).send(JSON.stringify(urn));
   });
-  disconnect();
 });
 
 /*
@@ -71,7 +71,7 @@ router.post('/delete', (req, res, next) => {
 });
 
 function connect() {
-  mongoose.connect('mongodb://smart-nosql:fokX9IBRKOVwup6C7N58X7puEB6fCRFSxSA2crKv2LIGzXapheleLQMeo2J5NrrN3FNwbiX7MVChmYNRYIPZvw==@smart-nosql.documents.azure.com:10250/smartdata?ssl=true');
+    mongoose.connect('mongodb://cleancity-data:Rm7nJX7zTquWCqnd0pQpkOsurW8YlrxSJ6yoFpNf7syaHW9qXlkXmenfyiDiugOndgyWv1DfCqcSRlyewU7rAw==@cleancity-data.documents.azure.com:10250/smartdata?ssl=true');
 }
 function disconnect() {
   mongoose.disconnect();
