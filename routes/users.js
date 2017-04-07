@@ -26,7 +26,7 @@ router.get('/', function(req, res, next) {
     name: 'gleb',
     password: 'gleb',
     regNumber: '123-441m',
-    autoNumber: 'a123aa',
+    phone: '88005553535',
     urns: [
       'TestDevice1',
       'TestDevice2'
@@ -36,7 +36,7 @@ router.get('/', function(req, res, next) {
     name: 'anton',
     password: 'anton',
     regNumber: '091-666d',
-    autoNumber: 'p103ap',
+    phone: '0931223451',
     urns: [
       'TestDevice3',
       'TestDevice2'
@@ -48,8 +48,8 @@ router.get('/', function(req, res, next) {
 router.post('/', (req, res, next) => {
   const user = request.body.user;
   User.find({name: user.name, password: user.password})
-    .then((err, device) => {
-      res.status(200).send('OK');
+    .then((err, u) => {
+      res.status(200).send(u);
     })
     .catch((err) => res.status(500).send('Error'));
 });
