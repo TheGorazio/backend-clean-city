@@ -13,7 +13,7 @@ const Urn = mongoose.model('Urn', new mongoose.Schema({
     },
     history: [
         {
-            date: Date,
+            date: 'string',
             fill: 'number',
             battery: 'number'
         }
