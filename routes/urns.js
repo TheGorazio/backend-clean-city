@@ -4,21 +4,8 @@ var express = require('express');
 var router = express.Router();
 
 var mongoose = require('mongoose');
-
-const Urn = mongoose.model('Urn', new mongoose.Schema({
-    deviceId: 'string',
-    position: {
-        latitude: 'number',
-        longitude: 'number'
-    },
-    history: [
-        {
-            date: 'string',
-            fill: 'number',
-            battery: 'number'
-        }
-    ]
-}));
+const Urn = require('../models/Urn');
+const User = require('../models/User');
 
 /*
  * GET all urns
@@ -47,6 +34,30 @@ router.get('/:id', (req, res, next) => {
   });
 });
 
+/*
+  * GET urn for user with regNumber
+  * @param regNumber - string
+  */
+router.get('/foruser/:regNumber', (req, res, next) => {
+  connect();
+  User.findOne({regNumber: req.params.regNumber}, (err, user) => {
+    if (err) {
+      disconnect();
+      res.status(500).send('RegNumber not found');
+    }
+    else {
+      Urn.find({deviceId: { $in: user.urns }}, (err, urns) => {
+        if (err) {
+          disconnect();
+          res.status(500).send('Where are no urns');
+        } else {
+          disconnect();
+          res.status(200).send(urns);
+        }
+      });
+    }
+  });
+});
 /*
  * PUT new urn
  */

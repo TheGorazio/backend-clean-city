@@ -2,14 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var mongoose = require('mongoose');
-
-const User = mongoose.model('User', new mongoose.Schema({
-    name: 'string',
-    password: 'string',
-    regNumber: 'string',
-    autoNumber: 'string',
-    urns: []
-}));
+const User = require('../models/User');
 
 function connect() {
     mongoose.connect('mongodb://cleancity-data:Rm7nJX7zTquWCqnd0pQpkOsurW8YlrxSJ6yoFpNf7syaHW9qXlkXmenfyiDiugOndgyWv1DfCqcSRlyewU7rAw==@cleancity-data.documents.azure.com:10250/smartdata?ssl=true');
@@ -46,12 +39,22 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', (req, res, next) => {
-  const user = request.body.user;
-  User.find({name: user.name, password: user.password})
-    .then((err, u) => {
-      res.status(200).send(u);
-    })
-    .catch((err) => res.status(500).send('Error'));
+  connect();
+  User.findOne({name: req.body.name, password: req.body.password}, (err, user) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error');
+    } else {
+      console.log('Success', user);
+      disconnect();
+      res.status(200).send({
+        name: user.name,
+        phone: user.phone,
+        regNumber: user.regNumber,
+        urns: user.urns
+      });
+    }
+  });
 });
 
 
