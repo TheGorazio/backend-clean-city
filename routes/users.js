@@ -3,12 +3,12 @@ var router = express.Router();
 
 var mongoose = require('mongoose');
 
-const Urn = mongoose.model('User', new mongoose.Schema({
+const User = mongoose.model('User', new mongoose.Schema({
     name: 'string',
     password: 'string',
     regNumber: 'string',
     autoNumber: 'string',
-    urns: 'string[]'
+    urns: []
 }));
 
 function connect() {
