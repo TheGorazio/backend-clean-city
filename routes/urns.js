@@ -52,7 +52,9 @@ router.get('/foruser/:regNumber', (req, res, next) => {
           res.status(500).send('Where are no urns');
         } else {
           disconnect();
-          res.status(200).send(urns);
+          res.status(200).send({
+            urns: urns
+          });
         }
       });
     }
